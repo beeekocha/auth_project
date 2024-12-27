@@ -1,4 +1,4 @@
-- **Steps to run application on backend:**
+**Steps to run application on backend:**
 
 * docker compose up
 
@@ -10,7 +10,7 @@ To run tests:
 * npm run test:all
 
 
-- **Steps to run application on frontend:**
+**Steps to run application on frontend:**
 
 * npm i
 * npm run dev
