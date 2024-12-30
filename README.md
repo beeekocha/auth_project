@@ -1,8 +1,8 @@
 **Steps to run application on backend:**
 
-* docker compose up
-
+* docker-compose up
 To run nest.js server:
+* npm i
 * npm run start 
 
 To run tests: 
