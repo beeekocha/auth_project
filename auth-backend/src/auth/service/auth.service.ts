@@ -8,36 +8,62 @@ import {
   RegistrationPayload,
   RegistrationResult,
 } from './interfaces/register.interfaces';
+import { CustomLogger } from '../../common/logger/custom.logger';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private logger: CustomLogger,
   ) {}
 
   async register(
     registrationPayload: RegistrationPayload,
   ): Promise<RegistrationResult> {
-    const { salt, hash } = this.genPassword(registrationPayload.password);
-    const user = await this.userService.createNewUser({
-      email: registrationPayload.email,
-      name: registrationPayload.name,
-      hashedPassword: hash,
-      salt,
-    });
-    return this.signJwt({ id: user.id, email: user.email });
+    const { email, name, password } = registrationPayload;
+
+    try {
+      this.logger.info('Registration started', {
+        email,
+      });
+      const { salt, hash } = this.genPassword(password);
+      const user = await this.userService.createNewUser({
+        email,
+        name,
+        hashedPassword: hash,
+        salt,
+      });
+      const res = this.signJwt({ id: user.id, email: user.email });
+      return res;
+    } catch (error) {
+      this.logger.error('Registration failed', error, {
+        email,
+      });
+      throw error;
+    }
   }
 
   async login(loginPayload: LoginPayload): Promise<LoginResult> {
-    const user = await this.validateUser(
-      loginPayload.email,
-      loginPayload.password,
-    );
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+    const { email, password } = loginPayload;
+    try {
+      this.logger.info('Login started', {
+        email,
+      });
+
+      const user = await this.validateUser(email, password);
+      if (!user) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+      const res = this.signJwt({ id: user.id, email: user.email });
+
+      return res;
+    } catch (error) {
+      this.logger.error('Login failed', error, {
+        email,
+      });
+      throw error;
     }
-    return this.signJwt({ id: user.id, email: user.email });
   }
 
   async validateUser(email: string, pass: string): Promise<User | null> {

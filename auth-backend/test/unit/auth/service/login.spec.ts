@@ -5,6 +5,8 @@ import crypto from 'crypto';
 import { AuthService } from '../../../../src/auth/service/auth.service';
 import { User } from '../../../../src/user/schemas/user.schema';
 import { UserService } from '../../../../src/user/service/user.service';
+import { CustomLogger } from '../../../../src/common/logger/custom.logger';
+import { MockedLogger } from '../../../utils/mockedLogger';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -32,6 +34,7 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
+        { provide: CustomLogger, useClass: MockedLogger },
         {
           provide: UserService,
           useValue: {

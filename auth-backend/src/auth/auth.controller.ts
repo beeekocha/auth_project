@@ -22,9 +22,7 @@ export class AuthController {
   ): Promise<RegisterResponseDto> {
     const registrationPayload =
       this.registrationDtoMapper.toRegistrationPayload(registerRequestDto);
-
     const result = await this.authService.register(registrationPayload);
-
     return this.registrationDtoMapper.toRegistrationResponseDto(result);
   }
 
@@ -34,7 +32,7 @@ export class AuthController {
     @Body() loginRequestDto: LoginRequestDto,
   ): Promise<LoginResponseDto> {
     const loginPayload = this.loginDtoMapper.toLoginPayload(loginRequestDto);
-    const res = await this.authService.login(loginPayload);
-    return this.loginDtoMapper.toLoginResponseDto(res);
+    const result = await this.authService.login(loginPayload);
+    return this.loginDtoMapper.toLoginResponseDto(result);
   }
 }

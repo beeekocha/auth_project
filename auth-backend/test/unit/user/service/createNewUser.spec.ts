@@ -4,6 +4,8 @@ import { getModelToken } from '@nestjs/mongoose';
 import { ConflictException } from '@nestjs/common';
 import { User } from '../../../../src/user/schemas/user.schema';
 import { UserService } from '../../../../src/user/service/user.service';
+import { CustomLogger } from '../../../../src/common/logger/custom.logger';
+import { MockedLogger } from '../../../utils/mockedLogger';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -25,6 +27,7 @@ describe('UserService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
+        { provide: CustomLogger, useClass: MockedLogger },
         {
           provide: getModelToken(User.name),
           useValue: {
